@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as authed_demo from "../authed/demo.js";
+import type * as authed_helpers from "../authed/helpers.js";
 import type * as private_demo from "../private/demo.js";
 import type * as private_helpers from "../private/helpers.js";
 
@@ -18,6 +20,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "authed/demo": typeof authed_demo;
+  "authed/helpers": typeof authed_helpers;
   "private/demo": typeof private_demo;
   "private/helpers": typeof private_helpers;
 }>;

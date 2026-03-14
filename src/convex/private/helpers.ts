@@ -1,3 +1,6 @@
+// "private" queries/mutations/actions are ones that get called from the sveltekit backend, not the client
+// they're all protected by the CONVEX_API_KEY
+
 import { v } from 'convex/values';
 import {
 	customAction,
@@ -6,9 +9,6 @@ import {
 	customQuery
 } from 'convex-helpers/server/customFunctions';
 import { action, mutation, query } from '../_generated/server';
-
-// "private" queries/mutations/actions are ones that get called from the sveltekit backend, not the client
-// they're all protected by the CONVEX_API_KEY
 
 const apiKeyGuard = customCtxAndArgs({
 	args: { apiKey: v.string() },

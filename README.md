@@ -6,6 +6,6 @@ Basically a little sveltekit demo built out with my current opinions
 - tailwind
 - convex
 - effect v4
-- clerk auth
+- WorkOS AuthKit auth
 
 See .env.example for the environment variables you need to set up.

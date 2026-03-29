@@ -1,9 +1,8 @@
 import { ConvexPrivateService } from '$lib/services/convex';
 import { Effect } from 'effect';
 import { api } from '../../convex/_generated/api';
-import { getRequestEvent, query } from '$app/server';
-import { ClerkService } from '$lib/services/clerk';
-import type { RequestEvent } from '@sveltejs/kit';
+import { query } from '$app/server';
+import { WorkOSService } from '$lib/services/workos';
 import { effectRunner } from '$lib/runtime';
 
 const demoRemote = Effect.gen(function* () {
@@ -25,24 +24,22 @@ export const remoteDemoQuery = query(async () => {
 	return res;
 });
 
-const demoAuthed = (event: RequestEvent) =>
+const demoAuthed = (accessToken: string | null | undefined) =>
 	Effect.gen(function* () {
-		const clerk = yield* ClerkService;
+		const workos = yield* WorkOSService;
 
-		const user = yield* clerk.validateAuth(event);
+		const user = yield* workos.validateAccessToken(accessToken);
 
 		return user;
 	});
 
-export const remoteAuthedDemoQuery = query(async () => {
-	const event = getRequestEvent();
-
-	const res = await effectRunner(demoAuthed(event));
+export const remoteAuthedDemoQuery = query('unchecked', async (accessToken: string | null) => {
+	const res = await effectRunner(demoAuthed(accessToken));
 
 	return {
 		user: {
 			id: res.id,
-			email: res.primaryEmailAddress?.emailAddress ?? null
+			email: res.email
 		}
 	};
 });

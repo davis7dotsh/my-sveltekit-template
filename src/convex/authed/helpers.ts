@@ -1,4 +1,4 @@
-// "authed" queries/mutations/actions are ones that get called from the client, protected by the clerk auth token
+// "authed" queries/mutations/actions are ones that get called from the client, protected by the WorkOS auth token
 
 import { customAction, customMutation, customQuery } from 'convex-helpers/server/customFunctions';
 import { action, mutation, query } from '../_generated/server';

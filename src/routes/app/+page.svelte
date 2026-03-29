@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { getClerkContext } from '$lib/stores/clerk.svelte';
+	import { resolve } from '$app/paths';
+	import { getWorkOSContext } from '$lib/stores/workos.svelte';
 	import { useQuery, useConvexClient } from 'convex-svelte';
 	import { api } from '../../convex/_generated/api';
 	import type { Id } from '../../convex/_generated/dataModel';
 
-	const clerkContext = getClerkContext();
+	const workOSContext = getWorkOSContext();
 	const client = useConvexClient();
 
 	const conferencesQuery = useQuery(api.authed.conferences.list, {});
@@ -28,8 +29,8 @@
 		showForm = false;
 	}
 
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
+	async function handleSubmit(event: Event) {
+		event.preventDefault();
 		const start = new Date(startDate).getTime();
 		const end = new Date(endDate).getTime();
 
@@ -51,6 +52,7 @@
 				description: description || undefined
 			});
 		}
+
 		resetForm();
 	}
 
@@ -84,22 +86,43 @@
 	}
 </script>
 
-{#if !clerkContext.clerk.user}
-	<div class="flex min-h-screen items-center justify-center bg-stone-50">
-		<div
-			{@attach (el) => {
-				clerkContext.clerk.mountSignIn(el, {});
-			}}
-		></div>
+{#if !workOSContext.isAuthenticated}
+	<div class="flex min-h-screen items-center justify-center bg-stone-50 px-6">
+		<div class="w-full max-w-md rounded-2xl border border-stone-200 bg-white p-8 shadow-sm">
+			<p class="text-xs font-semibold tracking-[0.2em] text-stone-400 uppercase">
+				Conference Tracker
+			</p>
+			<h1 class="mt-3 text-3xl font-semibold tracking-tight text-stone-900">Sign in with WorkOS</h1>
+			<p class="mt-3 text-sm leading-6 text-stone-500">
+				Use AuthKit to access the Convex-backed conference dashboard.
+			</p>
+			<div class="mt-6 flex flex-col gap-3">
+				<button
+					onclick={() => workOSContext.signIn()}
+					class="rounded-xl bg-stone-900 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-stone-800"
+				>
+					Sign in
+				</button>
+				<button
+					onclick={() => workOSContext.signUp()}
+					class="rounded-xl border border-stone-300 px-4 py-3 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-50"
+				>
+					Create account
+				</button>
+			</div>
+		</div>
 	</div>
 {:else}
 	<div class="min-h-screen bg-stone-50 font-sans text-stone-900">
 		<header class="border-b border-stone-200 bg-white">
 			<div class="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-				<h1 class="text-lg font-semibold tracking-tight">Conferences</h1>
+				<div>
+					<h1 class="text-lg font-semibold tracking-tight">Conferences</h1>
+					<p class="text-sm text-stone-500">{workOSContext.currentUser?.email}</p>
+				</div>
 				<div class="flex items-center gap-3">
 					<a
-						href="/app/references"
+						href={resolve('/app/references')}
 						class="rounded-md px-3 py-1.5 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-700"
 					>
 						References
@@ -113,11 +136,12 @@
 					>
 						{showForm ? 'Cancel' : '+ New'}
 					</button>
-					<div
-						{@attach (el) => {
-							clerkContext.clerk.mountUserButton(el);
-						}}
-					></div>
+					<button
+						onclick={() => workOSContext.signOut()}
+						class="rounded-md border border-stone-300 px-3 py-1.5 text-sm font-medium text-stone-700 transition-colors hover:bg-stone-50"
+					>
+						Sign out
+					</button>
 				</div>
 			</div>
 		</header>

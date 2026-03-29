@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { CONVEX_PRIVATE_BRIDGE_KEY } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { ConvexHttpClient } from 'convex/browser';
 import { Data, Layer, ServiceMap } from 'effect';
 import * as Effect from 'effect/Effect';
@@ -60,10 +60,19 @@ export class ConvexPrivateService extends ServiceMap.Service<ConvexPrivateServic
 	'ConvexPrivateService'
 ) {
 	static readonly layer = Layer.sync(ConvexPrivateService, () => {
+		if (!CONVEX_URL) {
+			throw new Error('Missing PUBLIC_CONVEX_URL');
+		}
+
 		const convex = new ConvexHttpClient(CONVEX_URL);
+		const apiKey = env.CONVEX_PRIVATE_BRIDGE_KEY;
+
+		if (!apiKey) {
+			throw new Error('Missing CONVEX_PRIVATE_BRIDGE_KEY');
+		}
 
 		const withApiKey = <Args extends DefaultFunctionArgs>(args: Omit<Args, 'apiKey'>) =>
-			({ ...args, apiKey: CONVEX_PRIVATE_BRIDGE_KEY }) as unknown as Args;
+			({ ...args, apiKey }) as unknown as Args;
 
 		const createConvexError = <
 			Type extends 'query' | 'mutation' | 'action',

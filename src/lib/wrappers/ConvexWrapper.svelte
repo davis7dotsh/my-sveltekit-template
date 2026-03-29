@@ -1,23 +1,22 @@
 <script lang="ts">
 	import { CONVEX_URL } from '$lib/convex-env';
-	import { getClerkContext } from '$lib/stores/clerk.svelte';
+	import { getWorkOSContext } from '$lib/stores/workos.svelte';
 	import { setupConvex, useConvexClient } from 'convex-svelte';
 
-	const clerkContext = getClerkContext();
+	const workOSContext = getWorkOSContext();
+	const convexUrl = CONVEX_URL;
 
-	const getClerkAuthToken = async () => {
-		if (!clerkContext.currentSession) return null;
+	if (!convexUrl) {
+		throw new Error('Missing PUBLIC_CONVEX_URL');
+	}
 
-		return clerkContext.currentSession.getToken({
-			template: 'convex'
-		});
-	};
+	const getWorkOSAccessToken = () => workOSContext.getAccessToken();
 
-	setupConvex(CONVEX_URL);
+	setupConvex(convexUrl);
 
 	const convex = useConvexClient();
 
-	convex.setAuth(getClerkAuthToken);
+	convex.setAuth(getWorkOSAccessToken);
 
 	const { children } = $props();
 </script>

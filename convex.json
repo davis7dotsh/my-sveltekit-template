@@ -1,3 +1,33 @@
 {
-	"functions": "src/convex/"
+	"functions": "src/convex/",
+	"authKit": {
+		"dev": {
+			"configure": {
+				"redirectUris": ["http://localhost:5173/app"],
+				"appHomepageUrl": "http://localhost:5173/app",
+				"corsOrigins": ["http://localhost:5173"]
+			},
+			"localEnvVars": {
+				"WORKOS_CLIENT_ID": "${authEnv.WORKOS_CLIENT_ID}",
+				"WORKOS_API_KEY": "${authEnv.WORKOS_API_KEY}",
+				"PUBLIC_WORKOS_CLIENT_ID": "${authEnv.WORKOS_CLIENT_ID}",
+				"PUBLIC_WORKOS_REDIRECT_URI": "http://localhost:5173/app"
+			}
+		},
+		"preview": {
+			"configure": {
+				"redirectUris": ["https://${buildEnv.VERCEL_BRANCH_URL}/app"],
+				"appHomepageUrl": "https://${buildEnv.VERCEL_BRANCH_URL}/app",
+				"corsOrigins": ["https://${buildEnv.VERCEL_BRANCH_URL}"]
+			}
+		},
+		"prod": {
+			"environmentType": "production",
+			"configure": {
+				"redirectUris": ["https://${buildEnv.VERCEL_PROJECT_PRODUCTION_URL}/app"],
+				"appHomepageUrl": "https://${buildEnv.VERCEL_PROJECT_PRODUCTION_URL}/app",
+				"corsOrigins": ["https://${buildEnv.VERCEL_PROJECT_PRODUCTION_URL}"]
+			}
+		}
+	}
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ClerkWrapper from '$lib/wrappers/ClerkWrapper.svelte';
 	import ConvexWrapper from '$lib/wrappers/ConvexWrapper.svelte';
+	import WorkOSWrapper from '$lib/wrappers/WorkOSWrapper.svelte';
 
 	const { children } = $props();
 </script>
@@ -9,8 +9,8 @@
 	<title>Conference Tracker</title>
 </svelte:head>
 
-<ClerkWrapper>
+<WorkOSWrapper>
 	<ConvexWrapper>
 		{@render children()}
 	</ConvexWrapper>
-</ClerkWrapper>
+</WorkOSWrapper>

@@ -41,14 +41,15 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
-		"@clerk/backend": "^3.2.0",
-		"@clerk/clerk-js": "^6.3.0",
-		"@clerk/ui": "^1.2.1",
+		"@convex-dev/workos-authkit": "^0.1.7",
 		"@effect/platform-node": "^4.0.0-beta.31",
+		"@workos-inc/authkit-js": "^0.20.0",
+		"@workos-inc/node": "^8.10.0",
 		"convex": "^1.33.0",
 		"convex-helpers": "^0.1.114",
 		"convex-svelte": "^0.0.12",
 		"convex-vite-plugin": "^0.4.0",
-		"effect": "^4.0.0-beta.31"
+		"effect": "^4.0.0-beta.31",
+		"jose": "^6.2.2"
 	}
 }

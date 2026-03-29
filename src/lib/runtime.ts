@@ -3,9 +3,13 @@ import { Cause, Data, Effect, Exit, Layer, ManagedRuntime } from 'effect';
 import { NodeServices } from '@effect/platform-node';
 import { error } from '@sveltejs/kit';
 import { ConvexError, ConvexPrivateService } from './services/convex';
-import { ClerkError, ClerkService } from './services/clerk';
+import { WorkOSError, WorkOSService } from './services/workos';
 
-const appLayer = Layer.mergeAll(NodeServices.layer, ConvexPrivateService.layer, ClerkService.layer);
+const appLayer = Layer.mergeAll(
+	NodeServices.layer,
+	ConvexPrivateService.layer,
+	WorkOSService.layer
+);
 
 export const runtime = ManagedRuntime.make(appLayer);
 
@@ -67,7 +71,7 @@ const serializeUnknown = (value: unknown): unknown => {
 
 const toPublicError = (
 	errorValue: Pick<
-		GenericError | ConvexError | ClerkError,
+		GenericError | ConvexError | WorkOSError,
 		'message' | 'kind' | 'timestamp' | 'traceId'
 	>
 ) => ({
@@ -77,7 +81,7 @@ const toPublicError = (
 	traceId: errorValue.traceId
 });
 
-const logTaggedError = (errorValue: GenericError | ConvexError | ClerkError) => {
+const logTaggedError = (errorValue: GenericError | ConvexError | WorkOSError) => {
 	if (errorValue instanceof ConvexError) {
 		console.error('Convex error', {
 			traceId: errorValue.traceId,
@@ -93,8 +97,8 @@ const logTaggedError = (errorValue: GenericError | ConvexError | ClerkError) => 
 		return;
 	}
 
-	if (errorValue instanceof ClerkError) {
-		console.error('Clerk error', {
+	if (errorValue instanceof WorkOSError) {
+		console.error('WorkOS error', {
 			traceId: errorValue.traceId,
 			kind: errorValue.kind,
 			timestamp: errorValue.timestamp,
@@ -118,8 +122,8 @@ const logTaggedError = (errorValue: GenericError | ConvexError | ClerkError) => 
 export const effectRunner = async <T>(
 	effect: Effect.Effect<
 		T,
-		GenericError | ConvexError | ClerkError,
-		NodeServices.NodeServices | ConvexPrivateService | ClerkService
+		GenericError | ConvexError | WorkOSError,
+		NodeServices.NodeServices | ConvexPrivateService | WorkOSService
 	>
 ) => {
 	const exit = await runtime.runPromiseExit(effect);
@@ -133,7 +137,7 @@ export const effectRunner = async <T>(
 				if (
 					reason.error instanceof GenericError ||
 					reason.error instanceof ConvexError ||
-					reason.error instanceof ClerkError
+					reason.error instanceof WorkOSError
 				) {
 					logTaggedError(reason.error);
 				} else {
@@ -159,7 +163,7 @@ export const effectRunner = async <T>(
 				return error(500, toPublicError(firstError.value));
 			}
 
-			if (firstError.value instanceof ClerkError) {
+			if (firstError.value instanceof WorkOSError) {
 				return error(401, toPublicError(firstError.value));
 			}
 

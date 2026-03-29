@@ -12,3 +12,4 @@ Project guidelines:
 - every svelte component should have `lang="ts"`
 - after making changes to convex, run `bun run convex:gen` to generate the new api
 - run `bun run lint` to check for linting errors, `bun run format`, and `bun run check` to check for errors after making changes
+- be concise with all of your answers.

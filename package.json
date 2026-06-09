@@ -2,6 +2,7 @@
 	"name": "my-sveltekit-template",
 	"private": true,
 	"version": "0.0.1",
+	"license": "MIT",
 	"type": "module",
 	"scripts": {
 		"dev": "USE_LOCAL_CONVEX=true vite dev",
